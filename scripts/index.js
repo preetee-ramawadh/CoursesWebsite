@@ -4,7 +4,8 @@ window.onload = init;
 
 function init() {
 
-    getListOfCourses();
+    let tableData = document.getElementById("coursesDetailsData");
+    getListOfCourses(tableData);
 
     const urlParams = new URLSearchParams(location.search);
     // location.search returns the query string part of the URL
@@ -17,8 +18,8 @@ function init() {
 
 }
 
-function getListOfCourses() {
-    let tableData = document.getElementById("coursesDetailsData");
+function getListOfCourses(tableData) {
+    //let tableData = document.getElementById("coursesDetailsData");
 
     fetch("http://localhost:8081/api/courses")
         .then(response => response.json())
@@ -32,11 +33,19 @@ function getListOfCourses() {
                 cell2.innerHTML = courses[i].courseNum;
                 cell3.innerHTML = courses[i].courseName;
 
+                //adding "See Details" hyperlink to column "Details".
                 const detailsCell = row.insertCell(3);
                 let anchor = document.createElement("a");
                 anchor.href = `details.html?cid=${courses[i].id}`;
-                anchor.text = "See details";
+                anchor.text = "See Details";
                 detailsCell.appendChild(anchor);
+
+                //adding "Delete Course" hyperlink to column "Delete Course".
+                const deleteCell = row.insertCell(4);
+                let delAnchor = document.createElement("a");
+                delAnchor.href = `confirmdelete.html?cid=${courses[i].id}`;
+                delAnchor.text = "Delete Course";
+                deleteCell.appendChild(delAnchor);
             }
         });
 }
@@ -111,8 +120,6 @@ function btnAddClicked() {
             let message = "Course " + json.id + " added";
             let confirmationMessage = document.getElementById("confirmationMessage");
             confirmationMessage.innerHTML = message;
-
-            location.replace("index.html");
         })
         .catch(err => {
             // If the POST returns an error, display a message
@@ -120,4 +127,37 @@ function btnAddClicked() {
             confirmationMessage.innerHTML = "Unexpected error";
         });
 
+        //redirected to page displaying list of all courses
+        location.replace("index.html");
+}
+
+function btnDeleteClicked() {
+
+    const urlParams = new URLSearchParams(location.search);
+    // location.search returns the query string part of the URL
+    let cid = -1;
+    if (urlParams.has("cid") === true) {
+        cid = urlParams.get("cid")
+        // call a method that fetches this course
+        getCourse(cid);
+    }
+
+    // send DELETE request w/ id as part of URL
+    fetch("http://localhost:8081/api/courses/"+cid, {
+        method: "DELETE"
+    })
+        .then(response => response.json())
+        .then(json => {
+            // If the DELETE is successful, display a message
+            let confirmationMessage = document.getElementById("confirmationMessage");
+            confirmationMessage.innerHTML = "Course deleted";
+        })
+        .catch(err => {
+            // If the DELETE returns an error, display a message
+            let confirmationMessage = document.getElementById("confirmationMessage");
+            confirmationMessage.innerHTML = "Unexpected error."+err;
+        });
+
+        //redirected to page displaying list of all courses
+        location.replace("index.html");
 }
