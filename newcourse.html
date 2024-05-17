@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Course</title>
+</head>
+<body>
+    <form>
+        <div>Dept: <input type="text" id="dept" required></div><br>
+        <div>CourseNumber: <input type="text" id="courseNum" required></div><br>
+        <div>CourseName: <input type="text" id="courseName" required></div><br>
+        <div>Instructor: <input type="text" id="instructor" required></div><br>
+        <div>StartDate: <input type="text" id="startDate" required></div><br>
+        <div>Number of Days: <input type="text" id="noOfDays" required></div>
+        
+        <input type="button" value="Add Course" id="addCourseBtn" onclick="btnAddClicked();">
+    </form>
+
+    <div id="confirmationMessage"></div>
+
+    <script src="scripts/index.js";></script>
+</body>
+</html>
